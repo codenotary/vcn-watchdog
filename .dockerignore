@@ -1,0 +1,11 @@
+*.iml
+*.swp
+.DS_Store
+.env
+.git/
+.gitignore
+.idea
+Dockerfile
+LICENSE
+Readme.md
+docker-compose*.yml
