@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export CHECK_INTERVAL="60"
-export STAGE="STAGING"
 
 function ok() {
     name=$(jq -r ".artifact.name" <<< ${2})
