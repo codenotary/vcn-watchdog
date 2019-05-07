@@ -1,0 +1,29 @@
+#!/bin/bash
+
+export CHECK_INTERVAL="60"
+export STAGE="STAGING"
+
+function ok() {
+    name=$(jq -r ".artifact.name" <<< ${2})
+    level=$(jq -r ".verification.level" <<< ${2})
+    status=$(jq -r ".verification.status" <<< ${2})
+    publisher=$(jq -r ".artifact.publisher" <<< ${2})
+    echo "Container ${1} (${name}) check successful (publisher: ${publisher}, level: ${level}, status: ${status})"
+}
+
+function err() {
+    echo "Container ${1} (${2}) verification failed" >&2
+}
+
+while true; do
+    docker ps -q | grep -v ${HOSTNAME} | while read id; do
+        image=$(docker inspect "${id}" | jq '.[0].Config.Image' | sed 's/"//g')
+        json=$(vcn v -o=json "docker://${image}" 2> /dev/null)
+        if [ $? -eq 0 ] ; then
+            ok "${id}" "${json}"
+        else
+            err "${id}" "${image}"
+        fi
+    done
+    sleep "${CHECK_INTERVAL}"
+done
