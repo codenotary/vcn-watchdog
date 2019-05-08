@@ -2,7 +2,6 @@
 
 export CHECK_INTERVAL="5"
 export TARGET="/share/output"
-export STAGE="STAGING"
 
 function report() {
     echo "vcn-${3}{container=\"${1}\",image=\"${2}\"} ${4}" >> "${TARGET}"
