@@ -1,0 +1,40 @@
+#!/bin/bash
+
+export CHECK_INTERVAL="5"
+export TARGET="/share/output"
+export STAGE="STAGING"
+
+function report() {
+    echo "vcn-${3}{container=\"${1}\",image=\"${2}\"} ${4}" >> "${TARGET}"
+}
+
+function ok() {
+    echo "Container ${1} (${2}) verification ok"
+    jq -r '.artifact | to_entries[] | .key' <<< ${3} | while read key; do
+        report ${1} ${2} artifact-${key} $(jq -r ".artifact.${key}" <<< ${3})
+    done
+    jq -r '.verification | to_entries[] | .key' <<< ${3} | while read key; do
+        report ${1} ${2} verification-${key} $(jq -r ".verification.${key}" <<< ${3})
+    done
+}
+
+function err() {
+    echo "Container ${1} (${2}) verification failed" >&2
+    jq -r '.verification | to_entries[] | .key' <<< ${3} | while read key; do
+        report ${1} ${2} verification-${key} $(jq -r ".verification.${key}" <<< ${3})
+    done
+}
+
+while true; do
+    > "${TARGET}"
+    docker ps -q | grep -v ${HOSTNAME} | while read id; do
+        image=$(docker inspect "${id}" | jq '.[0].Config.Image' | sed 's/"//g')
+        json=$(vcn v -o=json "docker://${image}" 2> /dev/null)
+        if [ $? -eq 0 ] ; then
+            ok "${id}" "${image}" "${json}"
+        else
+            err "${id}" "${image}" "${json}"
+        fi
+    done
+    sleep "${CHECK_INTERVAL}"
+done
