@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CHECK_INTERVAL="5"
+export CHECK_INTERVAL="60"
 export TARGET="/share/output"
 
 function report() {
