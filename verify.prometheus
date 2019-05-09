@@ -8,23 +8,20 @@ export RESULT="${TARGET_DIR}/output"
 mkdir -p "${TARGET_DIR}"
 
 function report() {
-    echo "vcn-${3}{container=\"${1}\",image=\"${2}\"} ${4}" >> "${TARGET}"
+    echo "vcn_${3}{container=\"${1}\",image=\"${2}\"} ${4}" >> "${TARGET}"
 }
 
 function ok() {
     echo "Container ${1} (${2}) verification ok"
-    jq -r '.artifact | to_entries[] | .key' <<< ${3} | while read key; do
-        report ${1} ${2} artifact-${key} $(jq -r ".artifact.${key}" <<< ${3})
-    done
-    jq -r '.verification | to_entries[] | .key' <<< ${3} | while read key; do
-        report ${1} ${2} verification-${key} $(jq -r ".verification.${key}" <<< ${3})
+    for key in level status; do
+        report ${1} ${2} verification_${key} $(jq -r ".verification.${key}" <<< ${3})
     done
 }
 
 function err() {
     echo "Container ${1} (${2}) verification failed" >&2
-    jq -r '.verification | to_entries[] | .key' <<< ${3} | while read key; do
-        report ${1} ${2} verification-${key} $(jq -r ".verification.${key}" <<< ${3})
+    for key in level status; do
+        report ${1} ${2} verification_${key} $(jq -r ".verification.${key}" <<< ${3})
     done
 }
 
