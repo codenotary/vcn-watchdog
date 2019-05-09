@@ -5,7 +5,7 @@ services:
       context: "."
       dockerfile: "Dockerfile.prometheus"
     ports:
-      - "8080:8080"
+      - "9581:9581"
     restart: "always"
     healthcheck:
       test: "ps waux | grep -v grep | grep verify"
