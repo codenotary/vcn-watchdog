@@ -1,7 +1,11 @@
 #!/bin/bash
 
 export CHECK_INTERVAL="60"
-export TARGET="/share/output"
+export TARGET_DIR="/tmp/watchdog"
+export TARGET="${TARGET_DIR}/output.tmp"
+export RESULT="${TARGET_DIR}/output"
+
+mkdir -p "${TARGET_DIR}"
 
 function report() {
     echo "vcn-${3}{container=\"${1}\",image=\"${2}\"} ${4}" >> "${TARGET}"
@@ -24,6 +28,8 @@ function err() {
     done
 }
 
+goStatic -path "${TARGET_DIR}" -fallback "/output" -port "8080" &
+
 while true; do
     > "${TARGET}"
     docker ps -q | grep -v ${HOSTNAME} | while read id; do
@@ -35,5 +41,6 @@ while true; do
             err "${id}" "${image}" "${json}"
         fi
     done
+    mv "${TARGET}" "${RESULT}"
     sleep "${CHECK_INTERVAL}"
 done
