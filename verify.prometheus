@@ -28,7 +28,7 @@ function err() {
     done
 }
 
-goStatic -path "${TARGET_DIR}" -fallback "/output" -port "8080" &
+goStatic -path "${TARGET_DIR}" -fallback "/output" -port "9581" &
 
 while true; do
     > "${TARGET}"
