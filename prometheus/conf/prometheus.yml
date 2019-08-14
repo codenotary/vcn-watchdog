@@ -1,0 +1,21 @@
+global:
+  scrape_interval:     60s
+  evaluation_interval: 15s
+
+  external_labels:
+    monitor: 'promvcn'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'vcn-watchdog'
+    metrics_path: "/"
+    dns_sd_configs:
+    - names:
+      - 'tasks.vcn-watchdog'
+      type: 'A'
+      port: 9581
+
+
