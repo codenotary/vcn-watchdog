@@ -1,0 +1,18 @@
+#!/bin/bash
+
+export CHECK_INTERVAL="60"
+
+function err() {
+    echo "Container ${1} (${2}) verification failed" >&2
+}
+
+while true; do 
+    docker ps -q | grep -v ${HOSTNAME} | while read id; do
+        image=$(docker inspect "${id}" | jq '.[0].Config.Image' | sed 's/"//g')
+        if ! vcn v "docker://${image}" > /dev/null 2>&1; then
+            err "${image}" "${id}"
+        fi
+    done
+    sleep "${CHECK_INTERVAL}"
+done
+

@@ -88,7 +88,7 @@ When Prometheus runs the DNS lookup, Docker Swarm will return a list of IPs for 
 Using these IPs, Prometheus will bypass the Swarm load-balancer and will be able to scrape each exporter
 instance.
 
-## Full Stack deploymnet (Prometheus + vcn-watchdog)
+## Full Stack deployment (Prometheus + vcn-watchdog)
 If you don't have a running Prometheus and want to run the full stack, just use the docker-compose.stack.yml file
 
 ```bash
