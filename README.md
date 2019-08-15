@@ -110,3 +110,4 @@ docker stack rm vcn-fullstack
 ## Grafana
 
 You can simply add the Prometheus datasource to Grafana and import the Docker Swarm dashboard from here:
+[https://grafana.com/grafana/dashboards/10728](https://grafana.com/grafana/dashboards/10728)
