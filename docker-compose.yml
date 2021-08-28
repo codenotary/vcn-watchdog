@@ -3,11 +3,15 @@ services:
   vcn:
     build: "."
     restart: "always"
+    ports:
+      - "9581:9581"
     healthcheck:
       test: "ps waux | grep -v grep | grep verify"
       interval: "5s"
       timeout: "5s"
       retries: "5"
       start_period: "5s"
+    env_file:
+      - .env
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
