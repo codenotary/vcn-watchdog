@@ -10,6 +10,21 @@ alerting/monitoring functionality you want.
 
 Make sure /var/run/docker.sock is accessible.
 
+Copy and update the env.template file to .env:
+
+env.template file
+```sh
+VCN_LC_HOST=Codenotary Cloud Service
+VCN_LC_PORT=443
+VCN_LC_API_KEY=Codenotary Cloud API key
+
+```
+
+
+```sh
+cp env.template .env
+```
+
 Run this on your server:
 
     docker-compose build && docker-compose up -d
